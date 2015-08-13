@@ -1,3 +1,143 @@
-<h2 id='title'>Welcome to Ember.js</h2>
+<div class="titlebackground"></div>
 
-{{outlet}}
+<div id="titlejumbotron" class="jumbotron">
+
+	{{bs-page-header 
+		title	= "eBook Searcher"
+		sub	= "App"}}
+
+</div>
+
+<div class="row">
+  
+  <div class="col-md-3">
+
+	{{#bs-panel
+		heading = "Search Results"}}
+
+		{{#bs-button
+			type	= "default"
+			clicked	= "goTo_IndexPage"
+			icon 	= "glyphicon glyphicon-erase"}}
+			Clear
+		{{/bs-button}}		
+
+		{{outlet}}
+
+	{{/bs-panel}}
+
+  </div>
+
+  <div class="col-md-7">
+
+	{{#bs-panel 
+		heading = "Block DSL Editor"}}
+
+		{{blockly-basic 
+			currentControllerBinding = "controller"
+			blockToLoadBinding = "blockToLoad"}}
+
+	{{/bs-panel}}
+
+	{{#if selectedeBook}}
+
+		{{#bs-panel 
+			heading = "eBook Info"
+			type	= "info"}}
+
+			<div class = "jumbotron">
+
+				<div class = "container">
+
+				  <img {{bind-attr src=selectedeBook.image}}
+				       alt = {{bind-attr src=selectedeBook.image}}>
+				  <h1>{{selectedeBook.title}}</h1>
+				  <p><b>ISBN</b>: {{selectedeBook.isbn}}</p>
+				  <p>{{selectedeBook.description}}</p>
+
+				</div>
+
+			</div>
+
+		{{/bs-panel}}
+
+	{{/if}}
+
+  </div>
+
+  <div class="col-md-2">
+
+	{{#bs-panel
+		heading	= "Action Palette"}}
+
+		{{#bs-panel 
+			heading		= "Examples"
+			collapsible	= true
+			open		= true}}
+
+			<div>
+
+				<b>Simple search:</b>
+
+				{{#bs-button
+					type	= "default"
+					clicked	= "load_Example0"
+					icon 	= "glyphicon glyphicon-education"}}
+					Example 0
+				{{/bs-button}}
+
+			</div>
+
+			<div>
+
+				<b>Search & aggregate:</b>
+
+				{{#bs-button
+					type	= "default"
+					clicked	= "load_Example1"
+					icon 	= "glyphicon glyphicon-education"}}
+					Example 1
+				{{/bs-button}}
+
+			</div>
+
+			<div>
+
+				<b>Cascaded aggregations:</b>
+
+				{{#bs-button
+					type	= "default"
+					clicked	= "load_Example2"
+					icon 	= "glyphicon glyphicon-education"}}
+					Example 2
+				{{/bs-button}}
+
+				{{#bs-button
+					type	= "default"
+					clicked	= "load_Example3"
+					icon 	= "glyphicon glyphicon-education"}}
+					Example 3
+				{{/bs-button}}
+
+			</div>
+
+		{{/bs-panel}}
+
+		{{#bs-panel 
+			heading	= "RESTful Resource"
+			collapsible	= true
+			open		= false}}
+
+			{{bs-btn-group
+				contentBinding	= "datasourceTypes"
+				selectedBinding	= "selectedDatasourceType"
+				default		= "Cloud"
+				icon_active	= "glyphicon glyphicon-play-circle"}}
+
+		{{/bs-panel}}
+
+	{{/bs-panel}}
+
+  </div>
+
+</div>

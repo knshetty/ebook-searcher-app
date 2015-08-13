@@ -1,0 +1,260 @@
+<div>
+	{{#bs-button 
+		type="default"
+		clicked="show_WorkspaceAsXml"}}
+		Show Workspace - XML
+	{{/bs-button}}
+</div>
+
+<div class="blocky-basic"
+	 id="blocklyDiv">
+</div>
+
+<xml class="blocky-basic-toolbox">
+	<category name="Text">
+		<block type="text_print"></block>
+		<block type="text"></block>
+    </category>
+    
+    <category name="Datasource">
+		<block type="it-ebooks_datasource"></block>
+		<block type="join_datasource"></block>
+    </category>
+</xml>
+
+<xml class="blocky-basic-initial-blocks1" style="display: none">
+    <block type="join_datasource" id="1" x="16" y="0">
+    
+		<mutation items="2"></mutation>
+		<value name="ADD0">
+			<block type="it-ebooks_datasource" id="2">
+				<field name="SEARCH_STRING">Queue</field>
+			</block>
+		</value>
+		
+		<value name="ADD1">
+			<block type="join_datasource" id="3">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="it-ebooks_datasource" id="4">
+						<field name="SEARCH_STRING">Groovy</field>
+					</block>
+				</value>
+			</block>
+		</value>
+		
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks2" style="display: none">
+	<block type="join_datasource" id="1" x="23" y="6">
+		<mutation items="2"></mutation>
+		<value name="ADD0">
+			<block type="join_datasource" id="2">
+				<mutation items="4"></mutation>
+				<value name="ADD0">
+					<block type="it-ebooks_datasource" id="3">
+						<field name="SEARCH_STRING">HTML5</field>
+					</block>
+				</value>
+				<value name="ADD1">
+					<block type="join_datasource" id="4">
+						<mutation items="2"></mutation>
+					</block>
+				</value>
+				<value name="ADD2">
+					<block type="it-ebooks_datasource" id="5">
+						<field name="SEARCH_STRING">CoffeeScript</field>
+					</block>
+				</value>
+				<value name="ADD3">
+					<block type="it-ebooks_datasource" id="6">
+						<field name="SEARCH_STRING">JavaScript</field>
+					</block>
+				</value>
+			</block>
+		</value>
+		
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks3" style="display: none">
+	<block type="join_datasource" id="1" x="16" y="0">
+		<mutation items="3"></mutation>
+		<value name="ADD0">
+			<block type="join_datasource" id="2">
+				<mutation items="2"></mutation>
+					<value name="ADD0">
+						<block type="join_datasource" id="3">
+							<mutation items="2"></mutation>
+						</block>
+					</value>
+			</block>
+		</value>
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks4" style="display: none">
+	<block type="join_datasource" id="1" x="16" y="0">
+		<mutation items="3"></mutation>
+			<value name="ADD0">
+				<block type="join_datasource" id="2">
+					<mutation items="2"></mutation>
+					<value name="ADD0">
+						<block type="it-ebooks_datasource" id="7">
+							<field name="SEARCH_STRING">HTML5</field>
+						</block>
+					</value>
+					<value name="ADD1">
+						<block type="it-ebooks_datasource" id="10">
+							<field name="SEARCH_STRING">Test</field>
+						</block>
+					</value>
+				</block>
+			</value>
+			
+			<value name="ADD1">
+				<block type="it-ebooks_datasource" id="13">
+					<field name="SEARCH_STRING">Java</field>
+				</block>
+			</value>
+			
+			<value name="ADD2">
+				<block type="join_datasource" id="27">
+					<mutation items="2"></mutation>
+					<value name="ADD0">
+						<block type="it-ebooks_datasource" id="36">
+							<field name="SEARCH_STRING">123</field>
+						</block>
+					</value>
+				</block>
+			</value>
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks5" style="display: none">
+	<block type="join_datasource" id="1" x="16" y="0">
+		<mutation items="3"></mutation>
+
+		<value name="ADD0">
+			<block type="join_datasource" id="2">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="join_datasource" id="3">
+						<mutation items="2"></mutation>
+					</block>
+				</value>
+			</block>
+		</value>
+	
+		<value name="ADD1">
+			<block type="join_datasource" id="4">
+				<mutation items="2"></mutation>
+			</block>
+		</value>
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks6" style="display: none">
+	<block type="join_datasource" id="1" x="33" y="20">
+		<mutation items="2"></mutation>
+			<value name="ADD0">
+				<block type="join_datasource" id="2">
+					<mutation items="2"></mutation>
+				</block>
+			</value>
+			
+			<value name="ADD1">
+				<block type="join_datasource" id="3">
+					<mutation items="2"></mutation>
+				</block>
+			</value>
+	</block>
+
+	<block type="text_print" id="12" x="34" y="162"></block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks7" style="display: none">
+	<block type="join_datasource" id="1" x="16" y="5">
+		<mutation items="4"></mutation>
+		<value name="ADD0">
+			<block type="it-ebooks_datasource" id="2">
+				<field name="SEARCH_STRING">HTML5</field>
+			</block>
+		</value>
+		<value name="ADD1">
+			<block type="it-ebooks_datasource" id="3">
+				<field name="SEARCH_STRING">Java</field>
+			</block>
+		</value>
+		<value name="ADD2">
+			<block type="it-ebooks_datasource" id="4">
+				<field name="SEARCH_STRING">CoffeeScript</field>
+			</block>
+		</value>
+		<value name="ADD3">
+			<block type="it-ebooks_datasource" id="5">
+				<field name="SEARCH_STRING">Scala</field>
+			</block>
+		</value>
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks8" style="display: none">
+	<block type="join_datasource" id="1" x="23" y="6">
+		<mutation items="2"></mutation>
+		<value name="ADD0">
+			<block type="join_datasource" id="2">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="it-ebooks_datasource" id="3">
+						<field name="SEARCH_STRING">HTML5</field>
+					</block>
+				</value>
+			</block>
+		</value>
+		<value name="ADD1">
+			<block type="join_datasource" id="4">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="it-ebooks_datasource" id="5">
+						<field name="SEARCH_STRING">Java</field>
+					</block>
+				</value>
+			</block>
+		</value>
+	</block>
+</xml>
+
+<xml class="blocky-basic-initial-blocks9" style="display: none">
+	<block type="join_datasource" id="21" x="18" y="38">
+		<mutation items="3"></mutation>
+		<value name="ADD0">
+			<block type="it-ebooks_datasource" id="18">
+				<field name="SEARCH_STRING">REST</field>
+			</block>
+		</value>
+		<value name="ADD1">
+			<block type="it-ebooks_datasource" id="28">
+				<field name="SEARCH_STRING">Single Page</field>
+			</block>
+		</value>
+		<value name="ADD2">
+			<block type="join_datasource" id="38">
+				<mutation items="2"></mutation>
+				<value name="ADD0">
+					<block type="it-ebooks_datasource" id="10">
+						<field name="SEARCH_STRING">CoffeeScript</field>
+					</block>
+				</value>
+				<value name="ADD1">
+					<block type="it-ebooks_datasource" id="15">
+						<field name="SEARCH_STRING">HTML5</field>
+					</block>
+				</value>
+			</block>
+		</value>
+	</block>
+</xml>
+
+{{outlet}}

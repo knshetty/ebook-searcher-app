@@ -2,10 +2,11 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'algo-builder-prototype',
+    modulePrefix: 'ebook-searcher-app',
     environment: environment,
-    baseURL: '/',
+    baseURL: '/ebook-searcher-app',
     locationType: 'auto',
+    contentSecurityPolicy: {'img-src': "'self' it-ebooks-api.info s.it-ebooks-api.info"},
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
