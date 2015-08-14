@@ -1,7 +1,30 @@
-# ebook Searcher App
+# eBooks Searcher App
 
-This README outlines the details of collaborating on this Ember application.
-A short introduction of this app could easily go here.
+Here's an interactive eBook search tool [i.e. a Single-Page web application(SPA)], intended to be a technical example on how-to combine below technologies:
+
+* [Ember.js](http://emberjs.com/) a SPA framework
+* [Blockly](https://developers.google.com/blockly/) a visual programming editor library
+* [IT-eBooks API](http://it-ebooks-api.info/) an open RESTful webservice to access eBooks information
+	
+### What can one do with this app?
+
+* Search eBooks across multiple RESTful-resources
+* Compose-&-Combine search queries & their results using Visual-Blocks
+* Provides a set of interactive Visual-Blocks, where a mouse-click on a given Visual-Block produce's instant results.
+
+### Ember.js highlights:
+
+* Wraps the entire Blockly editor as an Ember component
+* Each block has been a detected route
+* Auto route-transitions are used for childern-block traversals
+
+### Blockly hightlights:
+
+* Custom blocks
+	
+### IT-eBooks API highlights:
+
+* Only a single type of request is made to RESTful API, which is of type '/search/{query}'. Here the response is a paged result i.e. each page result is capped to 10 items.
 
 ## Prerequisites
 
@@ -12,7 +35,7 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
+* `git clone https://github.com/knshetty/ebook-searcher-app.git` this repository
 * change into the new directory
 * `npm install`
 * `bower install`
@@ -20,25 +43,51 @@ You will need the following things properly installed on your computer.
 ## Running / Development
 
 * `ember server`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+* Visit your app at [http://localhost:4200/ebook-searcher-app/](http://localhost:4200/ebook-searcher-app/).
 
 ### Code Generators
 
 Make use of the many generators for code, try `ember help generate` for more details
-
-### Running Tests
-
-* `ember test`
-* `ember test --server`
 
 ### Building
 
 * `ember build` (development)
 * `ember build --environment production` (production)
 
-### Deploying
+## How-To-BootStrap this ember-cli project from scratch:
 
-Specify what it takes to deploy your app.
+### 0. Create a basic ember-cli project:
+
+	$ ember new ebook-searcher-app
+	$ cd ebook-searcher-app/
+	$ npm install && bower install
+		
+### 1. Install dependencies that help in build management:
+
+	$ npm install --save-dev broccoli-merge-trees
+	$ npm install --save-dev broccoli-static-compiler
+	$ npm install ember-cli-coffeescript@0.10.0 --save-dev
+	$ npm cache clean
+	$ npm install
+			
+### 2. Install app specific dependencies:
+
+	$ bower install bootstrap --save
+	$ bower install ember-addons.bs_for_ember --save
+	$ bower install openhab-blockly --save
+			
+### 3. Setup project-build environment
+
+	Configure the file "Brocfile.js" for the build with following depedencies:
+		i. "Bootstrap3" UI framework's dependencies
+		ii. "Bootstrap-for-ember" dependencies
+		iii. "Blockly" dependencies
+		iv. "Index" page dependencies
+		
+### 4. Conduct a basic smoke test
+
+	$ ember server
+	Visit the running app at http://0.0.0.0:4200/
 
 ## Further Reading / Useful Links
 

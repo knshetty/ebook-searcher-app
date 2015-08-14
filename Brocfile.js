@@ -81,7 +81,7 @@ var blocklyCustomBlocksMedia = pickFiles('images/blockly_custom/', {
 	destDir: '/media/icons'
 });
 
-// --- Index view dependencies: Wallpaper Images ---
+// --- Index page dependencies: Wallpaper Images ---
 var wallpaperImages = pickFiles('images/wallpaper/', {
 	srcDir: '/',
 	files: ['linkedglobe_wallpaper.jpg',
