@@ -6,71 +6,83 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 	classNames: ['ember-blockly']
 	
-	workspace: null
+	blocklyEditor: null
 	
-	allBlocks_Initial: null
+	allBlocks_VisualType_InWorkspace: null
 	
-	blockVisuals: Ember.A([])
-	selectedBlockVisual: null
+	allBlocks_EmberObjType_FromWorkspace: Ember.A([])
+
+	selectedBlock_EmberObjType: null
 	
-	
+	# --------------------------------
+	# --- Component Initialisation ---
+	# --------------------------------
 	didInsertElement: ->
+
 		self = @
 		
-		# --------------------------
-		# --- Initialise Blockly ---
-		# --------------------------
-		# Create a blockly-editor with toolbox
-		@workspace = Blockly.inject(
-						'blocklyDiv',
-						{media: 'media/',
-						toolbox: self.$('.blocky-basic-toolbox').get(0)})
+		# -----------------------------------------------------
+		# Initialise Blockly-Editor
+		# Note! This editor is composed of: Toolbox + Workspace
+		# -----------------------------------------------------
+		# instantiate a blockly-editor
+		@blocklyEditor = Blockly.inject('blocklyDiv', 
+						{ media: 'media/', toolbox: self.$('.blocky-basic-toolbox').get(0)})
 		
-		# Setup Workspace's parent (i.e. ember-component class)
-		@workspace._parent = @
+		# Assign ember-context to blockly-editor's 
+		# (i.e. a context that wraps/controls the blockly-editor's behaviour)
+		@blocklyEditor._emberContext = @
 		
+		# -------------------------------------------------
+		# Handle Custom Blocks
+		# -------------------------------------------------
+		# Create & inject custom visual-blocks into toolbox
+		# Note! Toolbox contains: Categories
+		# -------------------------------------------------
+		# 'Itebooks' visual-block: Create & inject a custom visual-block to be 
+		# housed in the toolbox category called 'Datasource'
+		@addCustomVisualBlockItebooksBlock_DatasourceCategory(@)
+
+		# 'Join' visual-block: Create & inject a custom visual-block to be 
+		# housed in the toolbox category called 'Datasource'
+		@addCustomVisualBlockJoinBlock_DatasourceCategory(@)
 		
-		# ----------------------------
-		# --- Handle Custom Blocks ---
-		# ----------------------------
-		# Add Custom Blocks
-		@addCustomBlockWithCodeGenerator_Itebooks_Datasource(@)
-		@addCustomBlockWithCodeGenerator_Join_Datasource(@)
-		
-		
-		# ---------------------------------
-		# --- Populate Workspace Editor ---
-		# ---------------------------------
-		# Configuration initial blocks in the editor
+		# ------------------
+		# Populate workspace
+		# ------------------
+		# Approach 1: Populate workspace with predefined visual-block-composition:
+		# Handle predefinition of TEXT type that containing XML
 		xml_text = @get('blockToLoad')
 		if xml_text
 			xml = Blockly.Xml.textToDom(xml_text)
-			Blockly.Xml.domToWorkspace(@workspace, xml)
+			Blockly.Xml.domToWorkspace(@blocklyEditor, xml)
 		
-		###		
-		Blockly.Xml.domToWorkspace(
-			@workspace, 
-			self.$('.blocky-basic-initial-blocks9').get(0))
-		###	
-		
-		# ----------------------------
-		# --- Setup Event-Handlers ---
-		# ----------------------------
-		# Add Event-Handler: For each block in the Workspace
-		@allBlocks_Initial = Blockly.mainWorkspace.getAllBlocks()
-		for block in @allBlocks_Initial
-			Blockly.bindEvent_(block.getSvgRoot(), 
-							   'mouseup', 
-							   block, 
-							   @blockOnClick)
-			
-			# Get all Block-Visuals as ember objects
-			@blockVisuals.pushObject(Ember.Object.create({block:block}))
-      
-		# Add Event-Handler: For newly-added/removed 
-		# blocks to the Workspace
-		@workspace.addChangeListener(@workspaceOnModification)
+		###
+		# Approach 2: Populate workspace with predefined visual-block-composition:
+		# Handle predefinition of DOM element type that containing XML
+		Blockly.Xml.domToWorkspace(@blocklyEditor, self.$('.blocky-basic-initial-blocks1').get(0))
+		###
 
+		# --------------------
+		# Setup Event-Handlers
+		# --------------------
+		#--------------------------------------------------------------------------
+		# 1. Assign event-handler for reacting to visual-block's mouse-interactions
+		# 2. Build an ember-object-type collection from visual-blocks 
+		#--------------------------------------------------------------------------
+		@allBlocks_VisualType_InWorkspace = Blockly.mainWorkspace.getAllBlocks()
+		for visualBlock in @allBlocks_VisualType_InWorkspace
+
+			# Assign mouse-interaction event-handler for each visual-block found in the workspace
+			Blockly.bindEvent_(visualBlock.getSvgRoot(), 'mouseup', visualBlock, @blockOnClick)
+			
+			# Build-up an ember-object-type collection from all visual-blocks found in the workspace
+			@allBlocks_EmberObjType_FromWorkspace.pushObject(Ember.Object.create({block: visualBlock}))
+
+      		#--------------------------------------------------------------------------------
+		# Assign event-handler for reacting to add/removal of visual-blocks to workspace
+      		#--------------------------------------------------------------------------------
+		@blocklyEditor.addChangeListener(@workspaceOnChange)
 	
 	
 	# ---------------------
@@ -78,34 +90,38 @@ BlocklyBasicComponent = Ember.Component.extend(
 	# ---------------------
 	actions:
 		run: ->
-			console.log '--- Clicked: Run Button ---'
-			
+
+			# ------------------------
 			# Generate JavaScript code
+			# ------------------------
 			window.LoopTrap = 1000
 			Blockly.JavaScript.INFINITE_LOOP_TRAP = 'if (--window.LoopTrap == 0) throw "Infinite loop.";\n'
-			code = Blockly.JavaScript.workspaceToCode(@workspace)
+			code = Blockly.JavaScript.workspaceToCode(@blocklyEditor)
 			Blockly.JavaScript.INFINITE_LOOP_TRAP = null
 			
+			# -------------------
 			# Run JavaScript code
+			# -------------------
 			try
 				eval(code)
 			catch error
 				alert error
-				
 			
-		show_Code: ->
-			console.log '--- Clicked: ShowCode Button ---'
+		show_JSCode: ->
 
-			# Generate JavaScript code and display it.
+			# --------------------------------------------
+			# Generate JavaScript code in-order to display
+			# --------------------------------------------
 			Blockly.JavaScript.INFINITE_LOOP_TRAP = null
-			code = Blockly.JavaScript.workspaceToCode(@workspace)
+			code = Blockly.JavaScript.workspaceToCode(@blocklyEditor)
 			alert(code)
 			
 		show_WorkspaceAsXml: ->
-			console.log '--- Clicked: ShowWorkspace Button ---'
 
-			# Generate XML from blocks on the workspace and display it.
-			xml = Blockly.Xml.workspaceToDom(@workspace)
+			# ---------------------------------------------------------------------------------
+			# Generate XML from visual-block-composition present within the workspace & display
+			# ---------------------------------------------------------------------------------
+			xml = Blockly.Xml.workspaceToDom(@blocklyEditor)
 			xml_text = Blockly.Xml.domToText(xml)
 			console.log xml_text
 			alert(xml_text)
@@ -114,67 +130,120 @@ BlocklyBasicComponent = Ember.Component.extend(
 	# -------------------------------
 	# --- Declare Local Functions ---
 	# -------------------------------
-	# Response Event: On block selection
+	# ------------------------------------------------
+	# Respond-To-Event: On visual-block being selected
+	# ------------------------------------------------
 	blockOnClick: ->
-		# Avoiding event propagation to other stacked/connected blocks
-		if Blockly.selected.id == @.id
-			parent = Blockly.mainWorkspace._parent
-			selectedItem = parent.blockVisuals.
-							findBy('block.id', Blockly.selected.id)
-			
+
+		# ------------------------------------
+		# Initialise & set selected-block item
+		# ------------------------------------
+		# Act only on the selected-visual-block
+		if Blockly.selected.id == @id
+
+			# --------------------------------------------
+			# Get selected-block item of ember-object-type
+			# --------------------------------------------
+			editorEmberContext = Blockly.mainWorkspace._emberContext
+			selectedItem = editorEmberContext.allBlocks_EmberObjType_FromWorkspace.
+						findBy('block.id', Blockly.selected.id)
+
+			# -------------------------------------------------------
+			# Initialise the selected-block item of ember-object-type
+			# -------------------------------------------------------
 			selectedItem.block._outputModel = Ember.A([])
 			selectedItem.block._isChildernRouteLoaded = false
-			
-			parent.set('selectedBlockVisual', selectedItem)
+
+			# ------------------------------------------------
+			# Set the selected-block item of ember-object-type
+			# ------------------------------------------------
+			editorEmberContext.set('selectedBlock_EmberObjType', selectedItem)
 	
-	# Response Event: On Workspace modification, such as 
-	# addition/removal of blocks
-	workspaceOnModification: ->
-		allBlocks_Latest = Blockly.mainWorkspace.getAllBlocks()
-		parent = Blockly.mainWorkspace._parent
+	# -----------------------------------------------------------------------
+	# Respond-To-Event: On add/removal of visual-blocks to/from the workspace
+	# -----------------------------------------------------------------------
+	workspaceOnChange: ->
+
+		allVisualBlocks_Latest = Blockly.mainWorkspace.getAllBlocks()
+		editorEmberContext = Blockly.mainWorkspace._emberContext
 		
-		# On-changes to the number of blocks present in Workspace
-		if allBlocks_Latest.length == parent.allBlocks_Initial.length
-			return
-		
-		# On-addition of a new block to Workspace
-		else if allBlocks_Latest.length > parent.allBlocks_Initial.length
-			newBlock = Blockly.selected
-			Blockly.bindEvent_(newBlock.getSvgRoot(), 
-							   'mouseup', 
-							   newBlock, 
-							   parent.blockOnClick)
-			parent.allBlocks_Initial.push(newBlock)
+		# ---------------------------------------------------------------------------
+		# Scenario 1: When number of visual-blocks in the workspace remains as before
+		# ---------------------------------------------------------------------------
+		if allVisualBlocks_Latest.length == editorEmberContext.allBlocks_VisualType_InWorkspace.length
+			# Do nothing
+			return 
+
+		# ----------------------------------------------------------
+		# Scenario 2: On addition of a visual-block to the workspace
+		# ----------------------------------------------------------
+		else if allVisualBlocks_Latest.length > editorEmberContext.allBlocks_VisualType_InWorkspace.length
+
+			addedVisualBlock = Blockly.selected
 			
-			# Block-Visual: Add new item
-			parent.blockVisuals.pushObject(
-				Ember.Object.create({block:newBlock}))
+			# Assign mouse-interaction event-handler for the newly added visual-block
+			Blockly.bindEvent_(addedVisualBlock.getSvgRoot(), 
+						'mouseup', addedVisualBlock, editorEmberContext.blockOnClick)
+
+			# Keep account of newly added visual-block entries into the workspace
+			editorEmberContext.allBlocks_VisualType_InWorkspace.push(addedVisualBlock)
+			
+			# Create & add a new blocks entry to the ember-object-type collection
+			editorEmberContext.allBlocks_EmberObjType_FromWorkspace.
+				pushObject(Ember.Object.create({block: addedVisualBlock}))
 		
-		# On-removal of a block from Workspace
-		else if allBlocks_Latest.length < parent.allBlocks_Initial.length
-			for id in parent.allBlocks_Initial.getEach('id')
-				if !allBlocks_Latest.findBy('id', id)
-					# Block-Visual: Remove an item
-					deletedBlock = parent.allBlocks_Initial.
-												findBy('id', id)
-					parent.blockVisuals.removeObject(
-						parent.blockVisuals.
-							findBy('block.id', deletedBlock.id))
-					parent.set('selectedBlockVisual', null)
-			parent.allBlocks_Initial = allBlocks_Latest
+		# -----------------------------------------------------------
+		# Scenario 3: On-removal of a visual-block from the workspace
+		# -----------------------------------------------------------
+		else if allVisualBlocks_Latest.length < editorEmberContext.allBlocks_VisualType_InWorkspace.length
+
+			for id in editorEmberContext.allBlocks_VisualType_InWorkspace.getEach('id')
+
+				if !allVisualBlocks_Latest.findBy('id', id)
+
+					# ---------------------------------------------------------
+					# Purge visual-blocks from the ember-object-type collection
+					# ---------------------------------------------------------
+					deletedBlock = editorEmberContext.allBlocks_VisualType_InWorkspace.
+							findBy('id', id)
+					editorEmberContext.allBlocks_EmberObjType_FromWorkspace.
+						removeObject(editorEmberContext.allBlocks_EmberObjType_FromWorkspace.
+								findBy('block.id', deletedBlock.id))
+
+					# -----------------------------------------------------
+					# Re-initialise the selected-block of ember-object-type
+					# -----------------------------------------------------
+					editorEmberContext.set('selectedBlock_EmberObjType', null)
+
+			# Keep account of all the latest visual-blocks within the workspace			
+			editorEmberContext.allBlocks_VisualType_InWorkspace = allVisualBlocks_Latest
+
 		
-	# -----------------------------------------------
-	# --- Declare Custom Blocks + Code Generators ---
-	# -----------------------------------------------
-	################################
-	# 'It-ebooks - Datasource' Block
-	################################
-	addCustomBlockWithCodeGenerator_Itebooks_Datasource: (context)-> 
-		# Custom-block declaration
-		# v0.2 Block Factory URL => https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#ky4fee
-		# v0.1 Block Factory URL => https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#kkjtrt
+	# ---------------------------------------------------------
+	# --- Declare Custom Visual-Blocks with code generators ---
+	# ---------------------------------------------------------
+	#-----------------------------------------------------------------------------------------------------------
+	# Custom Visual-Block
+	#-----------------------------------------------------------------------------------------------------------
+	# Name: 		It-ebooks 
+	# Target-Category: 	Datasource
+	# Block Factory URL:
+	# 			v0.2 >> https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#ky4fee
+	# 			v0.1 >> https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#kkjtrt
+	#-----------------------------------------------------------------------------------------------------------
+	addCustomVisualBlockItebooksBlock_DatasourceCategory: (context)-> 
+
+		# --------------------------------------------------------------------------
+		# Declare custom visual-block: It-eBooks
+		# --------------------------------------------------------------------------
+		# Block Functionality: To make RESTful search-query request to IT-ebooks API
+		# Input Type: - None -
+		# Output Type: Array
+		# --------------------------------------------------------------------------
 		Blockly.Blocks['it-ebooks_datasource'] = {
+
 			init: ->
+
 				@appendDummyInput()
 					.appendField(new Blockly.FieldImage("media/icons/ebook_icon.png", 30, 30, "ebook_icon"))
 					.appendField("IT eBooks - Datasource")
@@ -183,13 +252,17 @@ BlocklyBasicComponent = Ember.Component.extend(
 					.appendField("Title / Author Search:")
 					.appendField(new Blockly.FieldTextInput("HTML5"), "SEARCH_STRING")
 				@setOutput(true)
-				@setColour(290)
+				@setColour(290) # 290 = Purple colour
 				@setTooltip('Search eBooks on http://it-ebooks.info')
 				@setHelpUrl('')
+
 		}
 		
-		# Code-generator: JavaScript 
+		# --------------------------
+		# Code-generator: JavaScript
+		# --------------------------
 		Blockly.JavaScript['it-ebooks_datasource'] = (block) ->
+
 			text_search_string = block.getFieldValue('SEARCH_STRING')
 			theUrl = "http://it-ebooks-api.info/v1/search/restful"
 			code = "var xmlHttp = new XMLHttpRequest();" +
@@ -197,51 +270,68 @@ BlocklyBasicComponent = Ember.Component.extend(
 				   "xmlHttp.send( null );" +
 				   "var response = xmlHttp.responseText;"
 			# TODO: Change ORDER_NONE to the correct strength.
-			return [code, Blockly.JavaScript.ORDER_NONE];
-			
-	###########################
-	# 'Join - Datasource' Block
-	###########################
-	addCustomBlockWithCodeGenerator_Join_Datasource: (context)-> 
-		# Custom-block declaration
-		# Source: https://github.com/google/blockly/blob/e3009310713209e80acc58a49d677d69f80d7b70/blocks/text.js @ line 69 (i.e. Blockly.Blocks['text_join'])
+			return [code, Blockly.JavaScript.ORDER_NONE]
+		
+	#-----------------------------------------------------------------------------------------------------------
+	# Custom Visual-Block
+	#-----------------------------------------------------------------------------------------------------------
+	# Name: 		Join 
+	# Target-Category: 	Datasource
+	# Source: 		https://github.com/google/blockly/blob/e3009310713209e80acc58a49d677d69f80d7b70/blocks/text.js starting from line 69 (i.e. Blockly.Blocks['text_join'])
+	#-----------------------------------------------------------------------------------------------------------
+	addCustomVisualBlockJoinBlock_DatasourceCategory: (context)->
+
+		# ----------------------------------------------------------------------------------
+		# Declare custom visual-block: Join
+		# ----------------------------------------------------------------------------------
+		# Block Functionality: Aggregate outputs of mulitple datasource-blocks of array type
+		# Input Type: Array
+		# Output Type: Array
+		# ----------------------------------------------------------------------------------
 		Blockly.Blocks['join_datasource'] = {
-			# Block for creating a string made up of any number of elements of any type.
+
 			init: ->
+
 				@itemCount_ = 2
 				@updateShape_()
-				@setOutput(true, 'String')
+				@setOutput(true, 'Array')
 				@setMutator(new Blockly.Mutator(['text_create_join_item']))
-				@setColour(290)
-				@setTooltip('Combine several datasources output together')
+				@setColour(290) # 290 = Purple colour
+				@setTooltip('Aggregate several datasources output together')
 				@setHelpUrl('')
 			
-			###
-			# Create XML to represent number of text inputs.
-			# @return {Element} XML storage element.
+			# -----------------------------------------------
+			# Create XML to represent number of array inputs.
+			# -----------------------------------------------
+			# @return {Element} XML storage elemen
 			# @this Blockly.Block
-			###
+			# -----------------------------------------------
 			mutationToDom: ->
+
 				container = document.createElement('mutation')
 				container.setAttribute('items', @itemCount_)
 				return container
 			
-			###
-			# Parse XML to restore the text inputs.
+			# -------------------------------------------------
+			# Parse XML to restore the array inputs.
+			# -------------------------------------------------
 			# @param {!Element} xmlElement XML storage element.
 			# @this Blockly.Block
-			###
+			# -------------------------------------------------
 			domToMutation: (xmlElement) ->
+
 				@itemCount_ = parseInt(xmlElement.getAttribute('items'), 10)
 				@updateShape_()
 			
-			###
+			# -----------------------------------------------------------
 			# Populate the mutator's dialog with this block's components.
-			# @param {!Blockly.Workspace} workspace Mutator's workspace.
+			# -----------------------------------------------------------
+			# @param {!Blockly.Workspace} Mutator's workspace.
 			# @return {!Blockly.Block} Root block in mutator.
 			# @this Blockly.Block
-			###
+			# -----------------------------------------------------------
 			decompose: (workspace) ->
+
 				containerBlock = Blockly.Block.obtain(workspace, 'text_create_join_container')
 				containerBlock.initSvg()
 				connection = containerBlock.getInput('STACK').connection
@@ -252,15 +342,19 @@ BlocklyBasicComponent = Ember.Component.extend(
 					connection = itemBlock.nextConnection
 				return containerBlock
 				
-			###
+			# ----------------------------------------------------------------
 			# Reconfigure this block based on the mutator dialog's components.
-			# @param {!Blockly.Block} containerBlock Root block in mutator.
+			# ----------------------------------------------------------------
+			# @param {!Blockly.Block} containerBlock is Root block in mutator.
 			# @this Blockly.Block
-			###
+			# ----------------------------------------------------------------
 			compose: (containerBlock) ->
+
 				itemBlock = containerBlock.getInputTargetBlock('STACK')
-				
-				# Count number of inputs.
+
+				# ----------------------				
+				# Count number of inputs
+				# ----------------------
 				connections = []
 				i = 0
 				while itemBlock
@@ -270,17 +364,21 @@ BlocklyBasicComponent = Ember.Component.extend(
 				@itemCount_ = i
 				@updateShape_()
 				
-				# Reconnect any child blocks.
+				# --------------------------
+				# Reconnect any child blocks
+				# --------------------------
 				for num in [0..@itemCount_-1]
 					if connections[num]
 						@getInput('ADD' + num).connection.connect(connections[num])
 			
-			###
-			# Store pointers to any connected child blocks.
-			# @param {!Blockly.Block} containerBlock Root block in mutator.
+			# ----------------------------------------------------------------
+			# Store pointers to any connected child blocks
+			# ----------------------------------------------------------------
+			# @param {!Blockly.Block} containerBlock is Root block in mutator.
 			# @this Blockly.Block
-			###
+			# ----------------------------------------------------------------
 			saveConnections: (containerBlock) ->
+
 				itemBlock = containerBlock.getInputTargetBlock('STACK')
 				i = 0
 				while itemBlock
@@ -289,13 +387,17 @@ BlocklyBasicComponent = Ember.Component.extend(
 				  itemBlock = itemBlock.nextConnection && itemBlock.nextConnection.targetBlock()
 				  i++
 			
-			###
+			# -------------------------------------------------------
 			# Modify this block to have the correct number of inputs.
+			# -------------------------------------------------------
 			# @private
 			# @this Blockly.Block
-			###
+			# -------------------------------------------------------
 			updateShape_: ->
-				# Delete everything.
+
+				# -----------------
+				# Delete everything
+				# -----------------
 				if @getInput('EMPTY')
 					@removeInput('EMPTY')
 				else
@@ -304,7 +406,9 @@ BlocklyBasicComponent = Ember.Component.extend(
 						@removeInput('ADD' + i)
 						i++
 				
-				# Rebuild block.
+				# -------------
+				# Rebuild block
+				# -------------
 				if @itemCount_ == 0
 					@appendDummyInput('EMPTY')
 						.appendField(@newQuote_(true))
@@ -320,42 +424,56 @@ BlocklyBasicComponent = Ember.Component.extend(
 	# -------------------------
 	# --- Declare Observers ---
 	# -------------------------
-	blockVisualsContentChanged: ( ->
-		if @selectedBlockVisual
-			blockToSelect = @allBlocks_Initial.findBy('id', 
-								@selectedBlockVisual.block.id)
+	selectedBlock_EmberObjectType_Changed: ( ->
+
+		# ---------------------------------------------------------
+		# On selecting a visual-block transtion to respective route
+		# ---------------------------------------------------------
+		if @selectedBlock_EmberObjType
+			blockToSelect = @allBlocks_VisualType_InWorkspace.
+						findBy('id', @selectedBlock_EmberObjType.block.id)
 			blockToSelect.select()
-			@get('currentController').transitionToRoute(
-					blockToSelect.type, @selectedBlockVisual.block.id)
+			@get('currentController').transitionToRoute(blockToSelect.type,
+									@selectedBlock_EmberObjType.block.id)
+		# -------------------------------------
+		# By default, transition to index route
+		# -------------------------------------
 		else
 			@get('currentController').transitionToRoute('index')
-	).observes('selectedBlockVisual')
 
-	blockToLoadChanged: (->
-		# Clear all blocks from the editor
+	).observes('selectedBlock_EmberObjType')
+
+	predefinedVisualBlockToLoad_Changed: (->
+
+		# Clear all visual-blocks from workspace
 		Blockly.mainWorkspace.clear()
+
+		# Clear ember-object-type collection
+		@allBlocks_EmberObjType_FromWorkspace.clear()
 		
-		# Get blocks to be loaded
+		# Get predefined visual-block-composition, which is to be loaded on to workspace
 		xml_text = @get('currentController.blockToLoad')
 
-		# Load blocks & add event-handlers
+		# -----------------------------------------------------------------------------
+		# 1. Load to workspace the predefined visual-block-composition
+		# 2. Add event-handlers to visual-blocks found in workspace
+		# 3. Load visual-blocks from workspace as entry to ember-object-type collection
+		# -----------------------------------------------------------------------------
+		# Load predefined visual-block-composition to the workspace
 		if xml_text
 			xml = Blockly.Xml.textToDom(xml_text)
-			Blockly.Xml.domToWorkspace(@workspace, xml)
-		
-			# ----------------------------
-			# --- Setup Event-Handlers ---
-			# ----------------------------
-			# Add Event-Handler: For each block in the Workspace
-			@allBlocks_Initial = Blockly.mainWorkspace.getAllBlocks()
-			for block in @allBlocks_Initial
-				Blockly.bindEvent_(block.getSvgRoot(), 
-								   'mouseup', 
-								   block, 
-								   @blockOnClick)
-			
-				# Get all Block-Visuals as ember objects
-				@blockVisuals.pushObject(Ember.Object.create({block:block}))		
+			Blockly.Xml.domToWorkspace(@blocklyEditor, xml)
+
+			@allBlocks_VisualType_InWorkspace = Blockly.mainWorkspace.getAllBlocks()
+			for visualBlock in @allBlocks_VisualType_InWorkspace
+
+				# Assign mouse-interaction event-handler for each visual-block found in the workspace
+				Blockly.bindEvent_(visualBlock.getSvgRoot(), 'mouseup', visualBlock, @blockOnClick)
+
+				# Create & add a new blocks entry to the ember-object-type collection
+				@allBlocks_EmberObjType_FromWorkspace.
+					pushObject(Ember.Object.create({block: visualBlock}))
+
 	).observes('currentController.blockToLoad')
 )
 

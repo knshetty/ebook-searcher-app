@@ -15,7 +15,7 @@ Here's an interactive eBook search tool [i.e. a Single-Page web application(SPA)
 ### Ember.js highlights:
 
 * Wraps the entire Blockly editor as an Ember component
-* Each block has been a detected route
+* Each block is assigned a detected route
 * Auto route-transitions are used for childern-block traversals
 
 ### Blockly hightlights:
