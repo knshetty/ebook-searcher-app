@@ -3,23 +3,29 @@
 # ------------------------
 # --- Declare Promises ---
 # ------------------------
-# Mockup =>> REST Call: Mock a search result for books from itebooks.com
-mockupRESTCall_SearchBooks_Async = (books, numOfBooksToMockup, searchString) ->
+# --------------------------------------------------------
+# Mockup REST Call: ITeBooks Open API as the resource
+# --------------------------------------------------------
+# Mock eBook search result that returns an array-of-eBooks
+# --------------------------------------------------------
+mockupRESTCall_SearcheBooks_Async = (eBooks, numOfeBooksToMockup, searchString) ->
 
 	return new Ember.RSVP.Promise((resolve) ->
 
-		Ember.run.later(books, ( ->
+		Ember.run.later(eBooks, ( ->
 
-				for i in [1..numOfBooksToMockup]
-					books.pushObject(Ember.Object.create({
-						title:'Title: '+searchString+'_Book'+i, 
+				for i in [1..numOfeBooksToMockup]
+
+					eBooks.pushObject(Ember.Object.create( {
+						title:'Title: '+searchString+'_Book'+i,
 						id:i,
 						description:'None',
 						image:'None',
 						subtitle:'None',
 						isbn:'None'
-					}))
-				resolve(books)
+					} ))
+
+				resolve(eBooks)
 
 		), 500)
 
@@ -29,55 +35,66 @@ mockupRESTCall_SearchBooks_Async = (books, numOfBooksToMockup, searchString) ->
 ItEbooksDatasourceRoute = Ember.Route.extend(
 
 	# Initialise RESTful resource
-	datasourceType: {title: 'Cloud'} # Alternative >> Cloud, Mockup
-	
-	# Initialise Total-Number-of-Books available
-	_totalNumOfAvailableBooks: 0
+	# Note! Alternatives are: (a) Cloud, (b) Mockup
+	restfulResourceType: {title: 'Cloud'}
+
+	# Initialise total number of eBooks available
+	_totalNumOfAvailableEbooks: 0
 
 	beforeModel: (transition) ->
 
-		# Get the datasource type as the RESTful resource
-		applicationController = transition.handlerInfos.findBy('name', 'application').handler.controller
+		# -------------------------
+		# Get RESTful resource type
+		# -------------------------
+		applicationController = transition.handlerInfos.
+															findBy('name', 'application').handler.controller
 		if applicationController.get('selectedDatasourceType') != undefined
-			@datasourceType = applicationController.get('selectedDatasourceType')
+
+			@restfulResourceType = applicationController.get('selectedDatasourceType')
 
 		# Get parameters passed with the route
 		params = @paramsFor(transition.targetName)
 
-		# Get block
+		# ---------
+		# Get Block
+		# ---------
 		block = Blockly.Block.getById(params.block_id, Blockly.selected.workspace)
 		@_block = block
-		
-		# Setup Ember-Context to the selected block
+
+		# Setup Ember-Context
 		block._emberContext = @
 
-		# Set URL (i.e. datasource resource)
+		# ------------------------
+		# Set RESTful resource URL
+		# ------------------------
 		@_searchString = block.getFieldValue('SEARCH_STRING')
 		@_url = 'http://it-ebooks-api.info/v1/search/'+@_searchString+'/page/1'
-	
+
 	model: (params) ->
 
 		# ---------------------------
-		# Build model: Mockup Fixture
+		# Build model: Mockup fixture
 		# ---------------------------
-		if @datasourceType.title == 'Mockup'
+		if @restfulResourceType.title == 'Mockup'
 
-			# Initialise Total-Number-of-Books generated
-			@set('_totalNumOfAvailableBooks', 0)
+			# Initialise total number of eBooks generated
+			@set('_totalNumOfAvailableEbooks', 0)
 
-			# -------------------------------			
-			# Invoke Mockup >> Mock REST Call
-			# -------------------------------
+			# ------------------
+			# Invoke mockup call
+			# ------------------
 			self = @
-			numOfBooksToMockup = 10
+			numOfeBooksToMockup = 10
 			dataset = Ember.A([])
-			mockupRESTCall_SearchBooks_Async(dataset, numOfBooksToMockup, self._searchString).then( (data) ->
+			mockupRESTCall_SearcheBooks_Async(dataset, numOfeBooksToMockup, self._searchString).then( (data) ->
 
-				# Set Total-Number-of-Books generated
-				self.set('_totalNumOfAvailableBooks', data.length)
+				# ------------------------------------
+				# Set total number of eBooks generated
+				# ------------------------------------
+				self.set('_totalNumOfAvailableEbooks', data.length)
 				self._block._totalAvailable = data.length
 
-				# Populate block's output			
+				# Populate block's output
 				self._block._outputModel = data
 
 				# Return model
@@ -86,48 +103,50 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 			)
 
 		# -----------------
-		# Extract model: REST
+		# Build model: REST
 		# -----------------
-		else if @datasourceType.title == 'Cloud'
-			
-			# Initialise Total-Number-of-Books found
-			@set('_totalNumOfAvailableBooks', 0)
+		else if @restfulResourceType.title == 'Cloud'
 
-			# Initialise an empty array to hold books
-			books = Ember.A([])
+			# Initialise total number of eBooks found
+			@set('_totalNumOfAvailableEbooks', 0)
 
-			# --------------------------------------------
-			# REST Call >> To search books on itebooks.com
-			# --------------------------------------------
+			# Initialise an empty array to hold eBooks
+			eBooks = Ember.A([])
+
+			# ---------------------------------------------------------
+			# Invoke RESTful call to search eBooks on ITeBooks Open API
+			# ---------------------------------------------------------
 			self = @
 			Ember.$.getJSON(@_url).then( (response) ->
 
 				if response.Books != undefined
 
-					response.Books.map((book)->
+					response.Books.map((eBook)->
 
-						books.pushObject(Ember.Object.create({
-							title:book.Title,
-							id:book.ID,
-							description:book.Description,
-							image:book.Image,
-							subtitle:book.SubTitle,
-							isbn:book.isbn
-						}))
+						eBooks.pushObject(Ember.Object.create( {
+							title:eBook.Title,
+							id:eBook.ID,
+							description:eBook.Description,
+							image:eBook.Image,
+							subtitle:eBook.SubTitle,
+							isbn:eBook.isbn
+						} ))
 
 					)
 
-				# Set Total-Number-of-Books found
-				self.set('_totalNumOfAvailableBooks', parseInt(response.Total))
+				# --------------------------------
+				# Set total number of eBooks found
+				# --------------------------------
+				self.set('_totalNumOfAvailableEbooks', parseInt(response.Total))
 				self._block._totalAvailable = parseInt(response.Total)
 
-				# Populate block's output			
-				self._block._outputModel = books
-			
-				# Return model			
-				return books
+				# Populate block's output
+				self._block._outputModel = eBooks
+
+				# Return model
+				return eBooks
 			)
-	
+
 	setupController: (controller, model) ->
 
 		# Set block
@@ -136,15 +155,22 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 		# Set model
 		controller.set('model', model)
 
-		# Select a book
+		# --------------
+		# Select a eBook
+		# --------------
 		if model.length > 0
-			controller.set('selectedbook', model[0])
 
-		# Set total number of availabe books
-		controller.set('totalAvailable', @_totalNumOfAvailableBooks)
-			
+			controller.set('selectedEbook', model[0])
+
+		# Set total number of availabe eBooks
+		controller.set('totalAvailable', @_totalNumOfAvailableEbooks)
+
+		# -------------------
 		# Set pagenated-count
-		pagenatedCountVsTotal = controller.model.length + ' / ' + @_totalNumOfAvailableBooks
+		# -------------------
+		pagenatedCountVsTotal = controller.model.length +
+		 												' / ' +
+														@_totalNumOfAvailableEbooks
 		controller.set('pagenatedCountVsTotal', pagenatedCountVsTotal)
 
 )

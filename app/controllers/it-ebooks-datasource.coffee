@@ -8,11 +8,11 @@ ItEbooksDatasourceController = Ember.Controller.extend(
 	# -------------------------
 	# --- Declare Observers ---
 	# -------------------------
-	selectedBookChanged: ( ->
+	selectedEbookChanged: ( ->
 
-		@set('controllers.application.selectedItem', @selectedbook)
+		@set('controllers.application.selectedItem', @selectedEbook)
 
-	).observes('selectedbook')
+	).observes('selectedEbook')
 
 )
 

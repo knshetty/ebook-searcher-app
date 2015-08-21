@@ -6,9 +6,9 @@ ApplicationController = Ember.Controller.extend(
 
 	selectedDatasourceType: null
 
-	datasourceTypes: [
-		Ember.Object.create({title: 'Cloud'})
-		Ember.Object.create({title: 'Mockup'})
+	datasourceTypeSelections: [
+		Ember.Object.create( {title: 'Cloud'} )
+		Ember.Object.create( {title: 'Mockup'} )
 	]
 
 	blockToLoad: null
