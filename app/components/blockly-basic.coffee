@@ -21,17 +21,6 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 		self = @
 
-		# ----------------------------------------------------------
-		# Initialise Blockly-Editor
-		# Note! A blockly-editor is composed of: Toolbox + Workspace
-		# ----------------------------------------------------------
-		# Instantiate a blockly-editor
-		@blocklyEditor = Blockly.inject('blocklyDiv',
-						{ media: 'media/', toolbox: self.$('.blocky-basic-toolbox').get(0)})
-
-		# Assign ember-context to blockly-editor
-		@blocklyEditor._emberContext = @
-
 		# -----------------------------------------------------
 		# Inject Custom Blocks
 		# -----------------------------------------------------
@@ -45,6 +34,19 @@ BlocklyBasicComponent = Ember.Component.extend(
 		# 'Join' visual-block: Create & inject a custom visual-block
 		# to be the toolbox category called 'Datasource'
 		@addCustomVisualBlockJoinBlock_DatasourceCategory(@)
+
+		# ----------------------------------------------------------
+		# Initialise Blockly-Editor
+		# Note! A blockly-editor is composed of: Toolbox + Workspace
+		# ----------------------------------------------------------
+		# Instantiate blockly-editor
+		@blocklyEditor = Blockly.inject('blocklyDiv', {
+											media: 'media/',
+											toolbox: self.$('.blocky-basic-toolbox').get(0)
+										 })
+
+		# Assign ember-context to blockly-editor
+		@blocklyEditor._emberContext = @
 
 		# ------------------
 		# Populate Workspace
@@ -493,7 +495,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 				)
 
 	).observes('currentController.blockToLoad')
-	
+
 )
 
 `export default BlocklyBasicComponent`

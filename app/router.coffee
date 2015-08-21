@@ -8,8 +8,6 @@ Router.map ->
   # --------------------------------------------
   # Public routes
   # --------------------------------------------
-  @route 'text_print', { path: '/text_print/:block' }
-  @route 'text', { path: '/text/:block' }
   @route 'it-ebooks_datasource', { path: '/it-ebooks_datasource/:block_id' }
   @route 'join_datasource', { path: '/join_datasource/:block_id' }
 

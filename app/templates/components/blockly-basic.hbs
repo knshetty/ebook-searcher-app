@@ -1,5 +1,5 @@
 <div>
-	{{#bs-button 
+	{{#bs-button
 		type="default"
 		clicked="show_WorkspaceAsXml"}}
 		Show Workspace - XML
@@ -11,27 +11,20 @@
 </div>
 
 <xml class="blocky-basic-toolbox">
-	<category name="Text">
-		<block type="text_print"></block>
-		<block type="text"></block>
-    </category>
-    
-    <category name="Datasource">
-		<block type="it-ebooks_datasource"></block>
-		<block type="join_datasource"></block>
-    </category>
+	<block type="it-ebooks_datasource"></block>
+	<block type="join_datasource"></block>
 </xml>
 
 <xml class="blocky-basic-initial-blocks1" style="display: none">
     <block type="join_datasource" id="1" x="16" y="0">
-    
+
 		<mutation items="2"></mutation>
 		<value name="ADD0">
 			<block type="it-ebooks_datasource" id="2">
 				<field name="SEARCH_STRING">Queue</field>
 			</block>
 		</value>
-		
+
 		<value name="ADD1">
 			<block type="join_datasource" id="3">
 				<mutation items="2"></mutation>
@@ -42,7 +35,7 @@
 				</value>
 			</block>
 		</value>
-		
+
 	</block>
 </xml>
 
@@ -74,7 +67,7 @@
 				</value>
 			</block>
 		</value>
-		
+
 	</block>
 </xml>
 
@@ -112,13 +105,13 @@
 					</value>
 				</block>
 			</value>
-			
+
 			<value name="ADD1">
 				<block type="it-ebooks_datasource" id="13">
 					<field name="SEARCH_STRING">Java</field>
 				</block>
 			</value>
-			
+
 			<value name="ADD2">
 				<block type="join_datasource" id="27">
 					<mutation items="2"></mutation>
@@ -146,7 +139,7 @@
 				</value>
 			</block>
 		</value>
-	
+
 		<value name="ADD1">
 			<block type="join_datasource" id="4">
 				<mutation items="2"></mutation>
