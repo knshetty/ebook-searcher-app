@@ -493,6 +493,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 				)
 
 	).observes('currentController.blockToLoad')
+	
 )
 
 `export default BlocklyBasicComponent`

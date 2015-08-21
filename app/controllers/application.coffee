@@ -1,11 +1,11 @@
 `import Ember from 'ember'`
 
 ApplicationController = Ember.Controller.extend(
-	
-	selectedeBook: null
+
+	selectedItem: null
 
 	selectedDatasourceType: null
-	
+
 	datasourceTypes: [
 		Ember.Object.create({title: 'Cloud'})
 		Ember.Object.create({title: 'Mockup'})
@@ -17,7 +17,7 @@ ApplicationController = Ember.Controller.extend(
 	# --- Action Events ---
 	# ---------------------
 	actions:
-		goTo_IndexPage: -> 
+		goTo_IndexPage: ->
 			@transitionToRoute('index')
 
 		load_Example0: ->

@@ -1,7 +1,7 @@
 `import Ember from 'ember'`
 
 JoinDatasourceController = Ember.Controller.extend(
-	
+
 	# Dependency injection
 	needs: ['application']
 
@@ -10,10 +10,10 @@ JoinDatasourceController = Ember.Controller.extend(
 	# -------------------------
 	selectedBookChanged: ( ->
 
-		@set('controllers.application.selectedeBook', @selectedbook)
+		@set('controllers.application.selectedItem', @selectedModelItem)
 
-	).observes('selectedbook')
-	
+	).observes('selectedModelItem')
+
 )
 
 `export default JoinDatasourceController`

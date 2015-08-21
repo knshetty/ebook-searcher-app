@@ -2,14 +2,14 @@
 
 <div id="titlejumbotron" class="jumbotron">
 
-	{{bs-page-header 
+	{{bs-page-header
 		title	= "eBook Searcher"
 		sub	= "App"}}
 
 </div>
 
 <div class="row">
-  
+
   <div class="col-md-3">
 
 	{{#bs-panel
@@ -20,7 +20,7 @@
 			clicked	= "goTo_IndexPage"
 			icon 	= "glyphicon glyphicon-erase"}}
 			Clear
-		{{/bs-button}}		
+		{{/bs-button}}
 
 		{{outlet}}
 
@@ -30,18 +30,18 @@
 
   <div class="col-md-7">
 
-	{{#bs-panel 
+	{{#bs-panel
 		heading = "Block DSL Editor"}}
 
-		{{blockly-basic 
+		{{blockly-basic
 			currentControllerBinding = "controller"
 			blockToLoadBinding = "blockToLoad"}}
 
 	{{/bs-panel}}
 
-	{{#if selectedeBook}}
+	{{#if selectedItem}}
 
-		{{#bs-panel 
+		{{#bs-panel
 			heading = "eBook Info"
 			type	= "info"}}
 
@@ -49,11 +49,11 @@
 
 				<div class = "container">
 
-				  <img {{bind-attr src=selectedeBook.image}}
-				       alt = {{bind-attr src=selectedeBook.image}}>
-				  <h1>{{selectedeBook.title}}</h1>
-				  <p><b>ISBN</b>: {{selectedeBook.isbn}}</p>
-				  <p>{{selectedeBook.description}}</p>
+				  <img {{bind-attr src=selectedItem.image}}
+				       alt = {{bind-attr src=selectedItem.image}}>
+				  <h1>{{selectedItem.title}}</h1>
+				  <p><b>ISBN</b>: {{selectedItem.isbn}}</p>
+				  <p>{{selectedItem.description}}</p>
 
 				</div>
 
@@ -70,7 +70,7 @@
 	{{#bs-panel
 		heading	= "Action Palette"}}
 
-		{{#bs-panel 
+		{{#bs-panel
 			heading		= "Examples"
 			collapsible	= true
 			open		= true}}
@@ -123,7 +123,7 @@
 
 		{{/bs-panel}}
 
-		{{#bs-panel 
+		{{#bs-panel
 			heading	= "RESTful Resource"
 			collapsible	= true
 			open		= false}}

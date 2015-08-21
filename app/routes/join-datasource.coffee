@@ -6,40 +6,51 @@ JoinDatasourceRoute = Ember.Route.extend(
 
 	beforeModel: (transition) ->
 
-		# Get passed-parameters with route
+		# Get parameter passed with the route url
 		params = @paramsFor(transition.targetName)
-		
+
 		# Get Block
 		@block = Blockly.Block.getById(params.block_id, Blockly.selected.workspace)
 
 		# Set Ember-Context
 		@block._emberContext = @
-		
-		# -------------------------------------------------------------
-		# Route the Childern-Blocks inorder to initialise there outputs
-		# -------------------------------------------------------------
+
+		# ------------------------------------------
+		# Get all the childern-block's outputs
+		# Note! Transitioning to a child-block route
+		# will automatically load it's outputs
+		# ------------------------------------------
 		if @block.childBlocks_.length > 0
 
 			if !@block._isChildernRouteLoaded
-		
-				# Flag Descendant-Blocks are loading their routes
+
+				# Flag descendant-block is loading it's route
 				@block._isChildernRouteLoaded = true
 
+				# --------------------------
+				# Purge child-block's output
+				# --------------------------
 				for childBlock in @block.childBlocks_
-					# Purge Child-Block's output
+
 					delete childBlock._outputModel
 
-				# Fire a single Child-Block route			
+				# ----------------------------------
+				# Fire a child-block route at-a-time
+				# ----------------------------------
 				for childBlock in @block.childBlocks_
-					@routeToChildBlockAndRouteToThisBack(childBlock, @)
+
+					@routeToChildBlockAndReturnBackThisRoute(childBlock, @)
 					break
-		
-			else 
-				# Fire a single Child-Block route at-a-time
+
+			else
+				# ----------------------------------
+				# Fire a child-block route at-a-time
+				# ----------------------------------
 				for childBlock in @block.childBlocks_
 
 					if !childBlock._outputModel
-						@routeToChildBlockAndRouteToThisBack(childBlock, @)
+
+						@routeToChildBlockAndReturnBackThisRoute(childBlock, @)
 						break
 
 	model: (params) ->
@@ -47,20 +58,27 @@ JoinDatasourceRoute = Ember.Route.extend(
 		# Initialise an empty model
 		aggregatedModels = Ember.A([])
 
-		# Initialise Total-Available-ChildOutput-Items
+		# Initialise total number of available child-output items
 		@set('_totalAvailable_ChildOutputItems', 0)
 
-		# Obtain all Childern-Blocks output for aggregation		
-		for childBlock in @block.childBlocks_			
+		# -----------------------------------------
+		# 1. Aggregate all childern-block's outputs
+		# 2. Compute 'totalAvailable' property
+		# -----------------------------------------
+		for childBlock in @block.childBlocks_
+
 			if childBlock._outputModel
-				# Aggregate Child-Output
+
+				# Aggregation: Enter each child-block's output into a single collection
 				aggregatedModels.pushObjects(childBlock._outputModel)
-				
-				# Aggregate Total-Available Child-Output-Items
+
+				# Compute total number of available child-block's output items
 				total = childBlock._totalAvailable + @_totalAvailable_ChildOutputItems
 				@set('_totalAvailable_ChildOutputItems', total)
+
+				# Set this totalAvailable property
 				@block._totalAvailable = total
-		
+
 		# Set this block's output
 		@block._outputModel = aggregatedModels
 
@@ -71,43 +89,64 @@ JoinDatasourceRoute = Ember.Route.extend(
 		# Set block
 		controller.set('block', @block)
 
-		# Set Model
+		# Set Ember-Model
 		controller.set('model', model)
 
-		# Select a book
+		# -----------------------------
+		# Select an item with the model
+		# -----------------------------
 		if model.length > 0
-			controller.set('selectedbook', model[0])
 
-		# Set total number of availabe Child-Output
+			controller.set('selectedModelItem', model[0])
+
+		# Set total number of available child-block's outputs
 		controller.set('totalAvailable', @_totalAvailable_ChildOutputItems)
-			
+
+		# -------------------
 		# Set pagenated-count
-		pagenatedCountVsTotal = controller.model.length + ' / ' + @_totalAvailable_ChildOutputItems
+		# -------------------
+		pagenatedCountVsTotal = controller.model.length +
+														' / ' +
+														@_totalAvailable_ChildOutputItems
 		controller.set('pagenatedCountVsTotal', pagenatedCountVsTotal)
 
-		# Flag Descendant-Blocks outputs have been loaded & aggregated
+		# Flag descendant-block's outputs have been loaded & aggregated
 		@block._isChildernRouteLoaded = false
-		
-		# Route back to Parent-Block
+
+		# --------------------------
+		# Route back to parent-block
+		# --------------------------
 		if @block.id != Blockly.selected.id
 
 			if @block.parentBlock_ != null
-				controller.transitionToRoute(@block.parentBlock_.type, @block.parentBlock_.id) 
+
+				controller.transitionToRoute(
+					@block.parentBlock_.type, @block.parentBlock_.id
+				)
 
 	# -------------------------------
 	# --- Declare Local Functions ---
 	# -------------------------------
-	routeToChildBlockAndRouteToThisBack: (childBlock, self)->
+	routeToChildBlockAndReturnBackThisRoute: (childBlock, self)->
 
-		# Fire-up a promise to route Child-Block
+		# -----------------------------------------
+		# Initialise a promise to route child-block
+		# -----------------------------------------
 		new Ember.RSVP.Promise((resolve)->
-			Ember.run(-> 
+
+			Ember.run(->
+
 				self.transitionTo(childBlock.type, childBlock.id).then( ->
-					# Route back to this-Block
+
+					# Route back to this-block
 					resolve(self.transitionTo(self.block.type, self.block.id))
+
 				)
+
 			)
+
 		)
+
 )
 
 `export default JoinDatasourceRoute`

@@ -1,14 +1,14 @@
 <h3>
-	{{bs-label 
+	{{bs-label
 		content	= "join_datasource"
 		type	= "primary"}}
 
-	{{bs-badge 
+	{{bs-badge
 		content	= pagenatedCountVsTotal}}
 </h3>
 
 {{bs-list-group
 	contentBinding	= "model"
-	selectedBinding	= "selectedbook"}}
+	selectedBinding	= "selectedModelItem"}}
 
 {{outlet}}
