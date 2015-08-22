@@ -1,10 +1,75 @@
 <div class="titlebackground"></div>
 
-<div class="jumbotron" id="titlejumbotron">
-	{{bs-page-header
-		title	= "eBook Searcher"
-		sub		= "App"}}
+<div class="row">
+	<div class="col-md-11">
+		<div class="jumbotron" id="titlejumbotron">
+			{{bs-page-header
+				title	= "eBook Searcher"
+				sub		= "App"}}
+		</div>
+	</div>
+
+	<div class="col-md-1">
+		{{#bs-button
+			type		= "link"
+			clicked	= "showAbout"
+			icon		= "glyphicon glyphicon-info-sign"}}
+			About
+		{{/bs-button}}
+	</div>
 </div>
+
+{{#bs-modal
+	name									=	"aboutModal"
+	fade									=	true
+	footerButtonsBinding	=	"aboutModalButtons"
+	title									=	"About"}}
+
+	<div class="row">
+		<div class="col-sm-5 col-md-5">
+			<div class="thumbnail">
+				<div align=center>
+					<strong>Technology Stack</strong>
+				</div>
+				<img src="/ebook-searcher-app/media/about/ebook-searcher_technologystack.svg"
+						 alt="eBook Searcher App's technologies">
+			</div>
+		</div>
+
+		<div class="col-sm-7 col-md-7">
+			<div class="thumbnail">
+				<h1>
+					eBook Searcher App
+				</h1>
+
+				<p>
+					This Single-Page Application (SPA) is designed by Nirdharsh. And acts as an interactive eBook search tool, intended to be a technical example on how-to combine technology-stack like <a href="http://emberjs.com/">Ember.js</a> + <a href="https://developers.google.com/blockly/">Blockly</a> + <a href="http://it-ebooks-api.info/">IT-eBooks API</a>.
+
+					<br>
+					<br>
+					<strong>Version</strong>
+
+					<br>
+					&nbsp; &nbsp; 0.1
+
+					<br>
+					<br>
+					<strong>License</strong>
+
+					<br>
+					&nbsp; &nbsp; 3-clause New BSD License.
+
+					<br>
+					<br>
+					<strong>Copyright</strong>
+
+					<br>
+					&nbsp; &nbsp; &copy; 2015 Nirdharsh Shetty
+				</p>
+			</div>
+		</div>
+	</div>
+{{/bs-modal}}
 
 <div class="row">
   <div class="col-md-3">

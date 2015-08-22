@@ -90,9 +90,17 @@ var wallpaperImages = pickFiles('images/wallpaper/', {
 	destDir: '/media/wallpapers'
 });
 
+// --- About modal dependencies ---
+var aboutModalImages = pickFiles('images/about/', {
+	srcDir: '/',
+	files: ['ebook-searcher_technologystack.svg'],
+	destDir: '/media/about'
+});
+
 module.exports = mergeTrees([app.toTree(),
                              bootstrapMap,
                              bootstrapFonts,
-			     blocklyMedia,
-			     blocklyCustomBlocksMedia,
-			     wallpaperImages]);
+														 blocklyMedia,
+														 blocklyCustomBlocksMedia,
+														 wallpaperImages,
+													 	 aboutModalImages]);
