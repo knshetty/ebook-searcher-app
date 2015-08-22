@@ -1,7 +1,15 @@
 <div>
 	{{#bs-button
 		type		=	"default"
-		clicked	=	"show_WorkspaceAsXml"}}
+		clicked	=	"clearWorkspace"
+		icon		= "glyphicon glyphicon-trash"}}
+		Clear Workspace
+	{{/bs-button}}
+
+	{{#bs-button
+		type		=	"default"
+		clicked	=	"show_WorkspaceAsXml"
+		icon		= "glyphicon glyphicon-eye-open"}}
 		Show Workspace - XML
 	{{/bs-button}}
 </div>

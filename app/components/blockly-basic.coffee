@@ -137,6 +137,12 @@ BlocklyBasicComponent = Ember.Component.extend(
 			console.log xml_text
 			alert(xml_text)
 
+		clearWorkspace: ->
+
+			# Clear all visual-blocks from workspace & purge
+			# all items from ember-object-type collection
+			@clearWorkspaceContents()
+
 
 	# -------------------------------
 	# --- Declare Local Functions ---
@@ -231,6 +237,18 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 			# Keep account of all the latest visual-blocks within the workspace
 			editorEmberContext.allBlocks_VisualType_InWorkspace = allVisualBlocks_Latest
+
+	# -----------------------------------------------
+	# Clear all visual-blocks from workspace & purge
+	# all items from ember-object-type collection
+	# -----------------------------------------------
+	clearWorkspaceContents: ->
+
+		# Clear all visual-blocks from workspace
+		Blockly.mainWorkspace.clear()
+
+		# Clear ember-object-type collection
+		@allBlocks_EmberObjType_FromWorkspace.clear()
 
 
 	# ---------------------------------------------------------
@@ -461,11 +479,9 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 	predefinedVisualBlockToLoad_Changed: (->
 
-		# Clear all visual-blocks from workspace
-		Blockly.mainWorkspace.clear()
-
-		# Clear ember-object-type collection
-		@allBlocks_EmberObjType_FromWorkspace.clear()
+		# Clear all visual-blocks from workspace & purge
+		# all items from ember-object-type collection
+		@clearWorkspaceContents()
 
 		# Get predefined visual-block-composition to-be loaded to the workspace
 		xml_text = @get('currentController.blockToLoad')
