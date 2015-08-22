@@ -328,6 +328,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 				@itemCount_ = 2
 				@updateShape_()
+				@setInputsInline(false)
 				@setOutput(true, 'Array')
 				@setMutator(new Blockly.Mutator(['text_create_join_item']))
 				@setColour(290) # 290 = Purple colour
@@ -438,6 +439,8 @@ BlocklyBasicComponent = Ember.Component.extend(
 					i = 0
 					while @getInput('ADD' + i)
 						@removeInput('ADD' + i)
+						if i == 0
+							@removeInput('DESCRIPTION')
 						i++
 
 				# -------------
@@ -452,6 +455,10 @@ BlocklyBasicComponent = Ember.Component.extend(
 						input = @appendValueInput('ADD' + num)
 						if num == 0
 							input.appendField('Join - Datasource')
+							@appendDummyInput('DESCRIPTION')
+								.appendField("Description:")
+								.appendField(new Blockly.FieldTextInput(''), 'DESCRIPTION')
+
 		}
 
 
