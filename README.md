@@ -1,30 +1,30 @@
 # eBooks Searcher App
 
-Here's an interactive eBook search tool [i.e. a Single-Page web application(SPA)], intended to be a technical example on how-to combine below technologies:
+Here's an interactive eBook searcher web-app [i.e. a Single-Page Application (SPA)], which is intended to be a technical example on how-to combine technologies mentioned below:
 
 * [Ember.js](http://emberjs.com/) a SPA framework
 * [Blockly](https://developers.google.com/blockly/) a visual programming editor library
 * [IT-eBooks API](http://it-ebooks-api.info/) an open RESTful webservice to access eBooks information
-	
-### What can one do with this app?
+
+### What can one do with this web-app?
 
 * Search eBooks across multiple RESTful-resources
-* Compose-&-Combine search queries & their results using Visual-Blocks
-* Provides a set of interactive Visual-Blocks, where a mouse-click on a given Visual-Block produce's instant results.
+* Compose-&-Combine search queries & their results using visual blocks
+* Provides a set of interactive visual blocks, i.e. for example a mouse-click on any given visual block produces an instant UI response.
 
 ### Ember.js highlights:
 
-* Wraps the entire Blockly editor as an Ember component
-* Each block is assigned a detected route
-* Auto route-transitions are used for childern-block traversals
+* Wraps the entire Blockly editor as an ember component
+* Each block is assigned a dedicated route
+* Automatic childern-block traversals i.e. auto transition to route takes place for all connected blocks
 
 ### Blockly hightlights:
 
 * Custom blocks
-	
+
 ### IT-eBooks API highlights:
 
-* Only a single type of request is made to RESTful API, which is of type '/search/{query}'. Here the response is a paged result i.e. each page result is capped to 10 items.
+* Only a single type of request is made to RESTful API, which is of type '/search/{query}'. Here the response is a paged result-set i.e. each page result is capped to 10 items.
 
 ## Prerequisites
 
@@ -61,7 +61,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 	$ ember new ebook-searcher-app
 	$ cd ebook-searcher-app/
 	$ npm install && bower install
-		
+
 ### 1. Install dependencies that help in build management:
 
 	$ npm install --save-dev broccoli-merge-trees
@@ -69,13 +69,13 @@ Make use of the many generators for code, try `ember help generate` for more det
 	$ npm install ember-cli-coffeescript@0.10.0 --save-dev
 	$ npm cache clean
 	$ npm install
-			
+
 ### 2. Install app specific dependencies:
 
 	$ bower install bootstrap --save
 	$ bower install ember-addons.bs_for_ember --save
 	$ bower install openhab-blockly --save
-			
+
 ### 3. Setup project-build environment
 
 	Configure the file "Brocfile.js" for the build with following depedencies:
@@ -83,7 +83,7 @@ Make use of the many generators for code, try `ember help generate` for more det
 		ii. "Bootstrap-for-ember" dependencies
 		iii. "Blockly" dependencies
 		iv. "Index" page dependencies
-		
+
 ### 4. Conduct a basic smoke test
 
 	$ ember server
@@ -96,4 +96,3 @@ Make use of the many generators for code, try `ember help generate` for more det
 * Development Browser Extensions
   * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
-
