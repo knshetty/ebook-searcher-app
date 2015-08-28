@@ -8,7 +8,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 	blocklyEditor: null
 
-	allBlocks_VisualType_InWorkspace: null
+	allBlocks_VisualType_InWorkspace: []
 
 	allBlocks_EmberObjType_FromWorkspace: Ember.A([])
 
@@ -29,11 +29,11 @@ BlocklyBasicComponent = Ember.Component.extend(
 		# -----------------------------------------------------
 		# 'Itebooks' visual-block: Create & inject a custom visual-block
 		# to be the toolbox category called 'Datasource'
-		@addCustomVisualBlockItebooksBlock_DatasourceCategory(@)
+		@addCustomVisualBlockItebooksBlock_DatasourceCategory()
 
 		# 'Join' visual-block: Create & inject a custom visual-block
 		# to be the toolbox category called 'Datasource'
-		@addCustomVisualBlockJoinBlock_DatasourceCategory(@)
+		@addCustomVisualBlockJoinBlock_DatasourceCategory()
 
 		# ----------------------------------------------------------
 		# Initialise Blockly-Editor
@@ -49,44 +49,19 @@ BlocklyBasicComponent = Ember.Component.extend(
 		@blocklyEditor._emberContext = @
 
 		# ------------------
-		# Populate Workspace
+		# Populate workspace
 		# ------------------
-		# Approach 1: Populate workspace with predefined visual-block
-		# composition: Handle predefinition of TEXT type that containing XML
-		xml_text = @get('blockToLoad')
-		if xml_text
-			xml = Blockly.Xml.textToDom(xml_text)
-			Blockly.Xml.domToWorkspace(@blocklyEditor, xml)
+		###
+		# Approach 1: Populate workspace with predefined visual-block composition:
+		# Handle XML predefinition in TEXT format
+		@populateWorkspace_CompositionInText()
+		###
 
 		###
 		# Approach 2: Populate workspace with predefined visual-block composition:
-		# Handle predefinition of DOM element type that containing XML
-		Blockly.Xml.domToWorkspace(
-			@blocklyEditor, self.$('.blocky-basic-initial-blocks1').get(0)
-		)
+		# Handle XML predefinition in DOM format
+		@populateWorkspace_CompositionInDOM('.blocky-basic-initial-blocks1')
 		###
-
-		# --------------------
-		# Setup Event-Handlers
-		# --------------------
-		# ----------------------------------------------------------------------
-		# 1. Assign event-handler for mouse-interactions with visual-blocks
-		# 2. Build an ember-object-type collection to house visual-block objects
-		# ----------------------------------------------------------------------
-		@allBlocks_VisualType_InWorkspace = Blockly.mainWorkspace.getAllBlocks()
-		for visualBlock in @allBlocks_VisualType_InWorkspace
-
-			# Assign mouse-interaction event-handler for
-			# each visual-block found in the workspace
-			Blockly.bindEvent_(
-				visualBlock.getSvgRoot(), 'mouseup', visualBlock, @blockOnClick
-			)
-
-			# Build-up an ember-object-type collection from
-			# all visual-blocks found in the workspace
-			@allBlocks_EmberObjType_FromWorkspace.pushObject(
-				Ember.Object.create( {block: visualBlock} )
-			)
 
     # -----------------------------------------------------
 		# Assign event-handler for reacting to addition/removal
@@ -199,17 +174,11 @@ BlocklyBasicComponent = Ember.Component.extend(
 
 			addedVisualBlock = Blockly.selected
 
-			# Assign mouse-interaction event-handler for the newly added visual-block
-			Blockly.bindEvent_(addedVisualBlock.getSvgRoot(), 'mouseup',
-				addedVisualBlock, editorEmberContext.blockOnClick)
+			# Assign event-handler for the newly added visual-block
+			editorEmberContext.assignEventHandlerToVisualBlock(addedVisualBlock)
 
 			# Keep account of newly added visual-block entries into the workspace
 			editorEmberContext.allBlocks_VisualType_InWorkspace.push(addedVisualBlock)
-
-			# Create & add a new block entry to the ember-object-type collection
-			editorEmberContext.allBlocks_EmberObjType_FromWorkspace.pushObject(
-				Ember.Object.create( {block: addedVisualBlock} )
-			)
 
 		# -----------------------------------------------------------
 		# Scenario 3: On-removal of a visual-block from the workspace
@@ -250,6 +219,65 @@ BlocklyBasicComponent = Ember.Component.extend(
 		# Clear ember-object-type collection
 		@allBlocks_EmberObjType_FromWorkspace.clear()
 
+	# -------------------------------------------------------------------
+	# Setup event-handlers for all visual-blocks present in the workspace
+	# -------------------------------------------------------------------
+	assignEventHandlersToAllBlocksInWorkspace: ->
+
+		@allBlocks_VisualType_InWorkspace = Blockly.mainWorkspace.getAllBlocks()
+		for visualBlock in @allBlocks_VisualType_InWorkspace
+			@assignEventHandlerToVisualBlock(visualBlock)
+
+	# --------------------------------------
+	# Setup event-handler for a visual-block
+	# --------------------------------------
+	assignEventHandlerToVisualBlock: (visualBlock) ->
+
+		# Assign mouse-interaction event-handler for
+		# each visual-block found in the workspace
+		Blockly.bindEvent_(
+			visualBlock.getSvgRoot(), 'mouseup', visualBlock, @blockOnClick
+		)
+
+		# Build-up an ember-object-type collection from
+		# all visual-blocks found in the workspace
+		@allBlocks_EmberObjType_FromWorkspace.pushObject(
+			Ember.Object.create( {block: visualBlock} )
+		)
+
+	# ------------------------------------------------------------
+	# Populate workspace with predefined visual-block composition:
+	# Handle XML predefinition in TEXT format
+	# ------------------------------------------------------------
+	populateWorkspace_CompositionInText: ->
+
+		# Get predefined visual-block composition to-be loaded to the workspace
+		xml_text = @get('currentController.blockToLoad')
+
+		# ---------------------------------------------------------
+		# Load predefined visual-block composition to the workspace
+		# ---------------------------------------------------------
+		if xml_text
+
+			xml = Blockly.Xml.textToDom(xml_text)
+
+			Blockly.Xml.domToWorkspace(@blocklyEditor, xml)
+
+			# Setup event-handlers for each visual-block
+			@assignEventHandlersToAllBlocksInWorkspace()
+
+	# ------------------------------------------------------------
+	# Populate workspace with predefined visual-block composition:
+	# Handle XML predefinition in DOM format
+	# ------------------------------------------------------------
+	populateWorkspace_CompositionInDOM: (domElement) ->
+
+		# Load predefined visual-block composition to the workspace
+		Blockly.Xml.domToWorkspace(@blocklyEditor, self.$(domElement).get(0))
+
+		# Setup event-handlers for each visual-block
+		@assignEventHandlersToAllBlocksInWorkspace()
+
 
 	# ---------------------------------------------------------
 	# --- Declare custom visual-blocks with code generators ---
@@ -264,7 +292,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 	# 									v0.2 >> https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#ky4fee
 	# 									v0.1 >> https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#kkjtrt
 	#-----------------------------------------------------------------------------
-	addCustomVisualBlockItebooksBlock_DatasourceCategory: (context)->
+	addCustomVisualBlockItebooksBlock_DatasourceCategory: ->
 
 		# --------------------------------------------------------------------------
 		# Declare custom visual-block: It-eBooks
@@ -312,7 +340,7 @@ BlocklyBasicComponent = Ember.Component.extend(
 	# Target-Category: 	Datasource
 	# Source: 					https://github.com/google/blockly/blob/e3009310713209e80acc58a49d677d69f80d7b70/blocks/text.js starting from line 69 (i.e. Blockly.Blocks['text_join'])
 	#-----------------------------------------------------------------------------
-	addCustomVisualBlockJoinBlock_DatasourceCategory: (context)->
+	addCustomVisualBlockJoinBlock_DatasourceCategory: ->
 
 		# -----------------------------------------------------
 		# Declare custom visual-block: Join
@@ -490,32 +518,8 @@ BlocklyBasicComponent = Ember.Component.extend(
 		# all items from ember-object-type collection
 		@clearWorkspaceContents()
 
-		# Get predefined visual-block-composition to-be loaded to the workspace
-		xml_text = @get('currentController.blockToLoad')
-
-		# --------------------------------------------------------------------------
-		# 1. Load to workspace the predefined visual-block-composition
-		# 2. Add event-handlers to visual-blocks found in workspace
-		# 3. Add visual-blocks from workspace as entry to ember-object-type
-		# 	 collection
-		# --------------------------------------------------------------------------
-		# Load predefined visual-block-composition to the workspace
-		if xml_text
-			xml = Blockly.Xml.textToDom(xml_text)
-			Blockly.Xml.domToWorkspace(@blocklyEditor, xml)
-
-			@allBlocks_VisualType_InWorkspace = Blockly.mainWorkspace.getAllBlocks()
-			for visualBlock in @allBlocks_VisualType_InWorkspace
-
-				# Assign mouse-interaction event-handler for
-				# each visual-block found in the workspace
-				Blockly.bindEvent_(visualBlock.getSvgRoot(), 'mouseup', visualBlock,
-					@blockOnClick)
-
-				# Create & add a new blocks entry to the ember-object-type collection
-				@allBlocks_EmberObjType_FromWorkspace.pushObject(
-					Ember.Object.create( {block: visualBlock} )
-				)
+		# Populate workspace with predefined visual-block composition
+		@populateWorkspace_CompositionInText()
 
 	).observes('currentController.blockToLoad')
 
