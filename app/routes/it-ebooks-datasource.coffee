@@ -34,11 +34,16 @@ mockupRESTCall_SearcheBooks_Async = (eBooks, numOfeBooksToMockup, searchString) 
 
 ItEbooksDatasourceRoute = Ember.Route.extend(
 
-	# Initialise RESTful resource
-	# Note! Alternatives are: (a) Cloud, (b) Mockup
-	restfulResourceType: {title: 'Cloud'}
+	# --------------------------------
+	# --- Declare Public Variables ---
+	# --------------------------------
+	# Initialise RESTful resource [Note! Options are: (a) Cloud, (b) Mockup]
+	restfulResourceType: { title: 'Cloud' }
 
-	# Initialise total number of eBooks available
+	# ---------------------------------
+	# --- Declare Private Variables ---
+	# ---------------------------------
+	# Initialise total number of eBooks found
 	_totalNumOfAvailableEbooks: 0
 
 	beforeModel: (transition) ->
@@ -52,16 +57,16 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 
 			@restfulResourceType = applicationController.get('selectedDatasourceType')
 
-		# Get parameters passed with the route
+		# Get parameter passed in the route url
 		params = @paramsFor(transition.targetName)
 
-		# ---------
-		# Get Block
-		# ---------
+		# ----------------
+		# Get visual-block
+		# ----------------
 		block = Blockly.Block.getById(params.block_id, Blockly.selected.workspace)
 		@_block = block
 
-		# Setup Ember-Context
+		# Setup ember context
 		block._emberContext = @
 
 		# ------------------------
@@ -77,7 +82,7 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 		# ---------------------------
 		if @restfulResourceType.title == 'Mockup'
 
-			# Initialise total number of eBooks generated
+			# Initialise total number of eBooks found
 			@set('_totalNumOfAvailableEbooks', 0)
 
 			# ------------------
@@ -88,9 +93,9 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 			dataset = Ember.A([])
 			mockupRESTCall_SearcheBooks_Async(dataset, numOfeBooksToMockup, self._searchString).then( (data) ->
 
-				# ------------------------------------
-				# Set total number of eBooks generated
-				# ------------------------------------
+				# --------------------------------
+				# Set total number of eBooks found
+				# --------------------------------
 				self.set('_totalNumOfAvailableEbooks', data.length)
 				self._block._totalAvailable = data.length
 
