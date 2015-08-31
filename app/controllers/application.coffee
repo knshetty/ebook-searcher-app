@@ -59,6 +59,11 @@ ApplicationController = Ember.Controller.extend(
 			url = 'http://it-ebooks.info/search/?q=' + @selectedItem.isbn + '&type=isbn'
 			@set('selectedItemUrl', url)
 
+		else
+
+			url = 'http://it-ebooks.info/'
+			@set('selectedItemUrl', url)
+
 	).observes('selectedItem')
 
 )
