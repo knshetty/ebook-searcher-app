@@ -6,7 +6,12 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/ebook-searcher-app',
     locationType: 'auto',
-    contentSecurityPolicy: {'img-src': "'self' it-ebooks-api.info s.it-ebooks-api.info"},
+    contentSecurityPolicy: {'img-src': "'self' " +
+                                       "it-ebooks-api.info " +
+                                       "s.it-ebooks-api.info " +
+                                       "www.googleapis.com " +
+                                       "books.google.fi " +
+                                       "books.google.com"},
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build

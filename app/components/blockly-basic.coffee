@@ -35,6 +35,10 @@ BlocklyBasicComponent = Ember.Component.extend(
 		# to be the toolbox category called 'Datasource'
 		@addCustomVisualBlockJoinBlock_DatasourceCategory()
 
+		# 'Google-Books' visual-block: Create & inject a custom visual-block
+		# to be the toolbox category called 'Datasource'
+		@addCustomVisualBlockGoogleBooksBlock_DatasourceCategory()
+
 		# ----------------------------------------------------------
 		# Initialise Blockly-Editor
 		# Note! A blockly-editor is composed of: Toolbox + Workspace
@@ -488,6 +492,55 @@ BlocklyBasicComponent = Ember.Component.extend(
 								.appendField(new Blockly.FieldTextInput(''), 'DESCRIPTION')
 
 		}
+
+	#-----------------------------------------------------------------------------
+	# Custom Visual-Block: 3
+	#-----------------------------------------------------------------------------
+	# Name: 						Google-Books
+	# Target-Category: 	Datasource
+	# Block Factory URL: - None -
+	#-----------------------------------------------------------------------------
+	addCustomVisualBlockGoogleBooksBlock_DatasourceCategory: ->
+
+		# --------------------------------------------------------------------------
+		# Declare custom visual-block: Google-Books
+		# --------------------------------------------------------------------------
+		# Block Functionality:	To make RESTful search-query
+		#												request to Google Books API
+		# Input Type: 					- None -
+		# Output Type:					Array
+		# --------------------------------------------------------------------------
+		Blockly.Blocks['google-books_datasource'] = {
+
+			init: ->
+
+				@appendDummyInput()
+					.appendField(new Blockly.FieldImage("media/icons/ebook_icon.png", 30, 30, "ebook_icon"))
+					.appendField("Google Books - Datasource")
+				@appendDummyInput()
+					.setAlign(Blockly.ALIGN_RIGHT)
+					.appendField("Title / Author Search:")
+					.appendField(new Blockly.FieldTextInput("RESTful"), "SEARCH_STRING")
+				@setOutput(true)
+				@setColour(290) # 290 = Purple colour
+				@setTooltip('Search eBooks on https://books.google.com')
+				@setHelpUrl('')
+
+		}
+
+		# --------------------------
+		# Code-generator: JavaScript
+		# --------------------------
+		Blockly.JavaScript['google-books_datasource'] = (block) ->
+
+			text_search_string = block.getFieldValue('SEARCH_STRING')
+			theUrl = "https://www.googleapis.com/books/v1/volumes?q=restful"
+			code = "var xmlHttp = new XMLHttpRequest();" +
+							"xmlHttp.open( 'GET', 'https://www.googleapis.com/books/v1/volumes?q=restful', false );" +
+							"xmlHttp.send( null );" +
+							"var response = xmlHttp.responseText;"
+			# TODO: Change ORDER_NONE to the correct strength.
+			return [code, Blockly.JavaScript.ORDER_NONE]
 
 
 	# -------------------------

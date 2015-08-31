@@ -10,5 +10,6 @@ Router.map ->
   # --------------------------------------------
   @route 'it-ebooks_datasource', { path: '/it-ebooks_datasource/:block_id' }
   @route 'join_datasource', { path: '/join_datasource/:block_id' }
+  @route 'google-books_datasource', { path: '/google-books_datasource/:block_id' }
 
 `export default Router`

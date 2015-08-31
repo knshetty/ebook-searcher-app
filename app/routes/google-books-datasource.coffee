@@ -4,7 +4,7 @@
 # --- Declare Promises ---
 # ------------------------
 # --------------------------------------------------------
-# Mockup REST Call: ITeBooks Open API as the resource
+# Mockup REST Call: Google Books API as the resource
 # --------------------------------------------------------
 # Mock eBook search result that returns an array-of-eBooks
 # --------------------------------------------------------
@@ -23,7 +23,7 @@ mockupRESTCall_SearcheBooks_Async = (eBooks, numOfeBooksToMockup, searchString) 
 						image:'None',
 						subtitle:'None',
 						isbn:'None',
-						infolink:'http://it-ebooks.info/'
+						infolink:'https://books.google.fi/'
 					} ))
 
 				resolve(eBooks)
@@ -33,7 +33,7 @@ mockupRESTCall_SearcheBooks_Async = (eBooks, numOfeBooksToMockup, searchString) 
 	)
 
 
-ItEbooksDatasourceRoute = Ember.Route.extend(
+GoogleBooksDatasourceRoute = Ember.Route.extend(
 
 	# --------------------------------
 	# --- Declare Public Variables ---
@@ -74,7 +74,7 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 		# Set RESTful resource URL
 		# ------------------------
 		@_searchString = block.getFieldValue('SEARCH_STRING')
-		@_url = 'http://it-ebooks-api.info/v1/search/'+@_searchString+'/page/1'
+		@_url = 'https://www.googleapis.com/books/v1/volumes?q='+@_searchString
 
 	model: (params) ->
 
@@ -125,18 +125,18 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 			self = @
 			Ember.$.getJSON(@_url).then( (response) ->
 
-				if response.Books != undefined
+				if response.items != undefined
 
-					response.Books.map((eBook)->
+					response.items.map((eBook)->
 
 						eBooks.pushObject(Ember.Object.create( {
-							title:eBook.Title,
-							id:eBook.ID,
-							description:eBook.Description,
-							image:eBook.Image,
-							subtitle:eBook.SubTitle,
-							isbn:eBook.isbn,
-							infolink:'http://it-ebooks.info/search/?q=' + eBook.isbn + '&type=isbn'
+							title:eBook.volumeInfo.title,
+							id:eBook.volumeInfo.id,
+							description:eBook.volumeInfo.description,
+							image:eBook.volumeInfo.imageLinks.thumbnail,
+							subtitle:'None',
+							isbn:eBook.volumeInfo.industryIdentifiers[0].identifier,
+							infolink:eBook.volumeInfo.infoLink
 						} ))
 
 					)
@@ -144,8 +144,8 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 				# --------------------------------
 				# Set total number of eBooks found
 				# --------------------------------
-				self.set('_totalNumOfAvailableEbooks', parseInt(response.Total))
-				self._block._totalAvailable = parseInt(response.Total)
+				self.set('_totalNumOfAvailableEbooks', parseInt(response.totalItems))
+				self._block._totalAvailable = parseInt(response.totalItems)
 
 				# Populate block's output
 				self._block._outputModel = eBooks
@@ -182,4 +182,4 @@ ItEbooksDatasourceRoute = Ember.Route.extend(
 
 )
 
-`export default ItEbooksDatasourceRoute`
+`export default GoogleBooksDatasourceRoute`

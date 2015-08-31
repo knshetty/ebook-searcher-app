@@ -4,7 +4,7 @@ ApplicationController = Ember.Controller.extend(
 
 	selectedItem: null
 
-	selectedItemUrl: 'http://it-ebooks.info/'
+	selectedItemUrl: null
 
 	selectedDatasourceType: null
 
@@ -54,14 +54,7 @@ ApplicationController = Ember.Controller.extend(
 
 	selectedEbookChanged: ( ->
 
-		if @selectedDatasourceType.title == 'Cloud'
-
-			url = 'http://it-ebooks.info/search/?q=' + @selectedItem.isbn + '&type=isbn'
-			@set('selectedItemUrl', url)
-
-		else
-
-			url = 'http://it-ebooks.info/'
+			url = @selectedItem.infolink
 			@set('selectedItemUrl', url)
 
 	).observes('selectedItem')
