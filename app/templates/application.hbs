@@ -104,11 +104,15 @@
 
 				<div class="jumbotron">
 					<div class="container">
-					  <img {{bind-attr src=selectedItem.image}}
-							alt={{bind-attr src=selectedItem.image}}>
+						<a {{bind-attr href=selectedItemUrl}} target="_blank">
+						  <img {{bind-attr src=selectedItem.image}}
+								alt={{bind-attr src=selectedItem.image}}>
+						</a>
 
 					  <h1>
-							{{selectedItem.title}}
+							<a {{bind-attr href=selectedItemUrl}} target="_blank">
+								{{selectedItem.title}}
+							</a>
 						</h1>
 
 					  <p>

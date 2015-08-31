@@ -4,6 +4,8 @@ ApplicationController = Ember.Controller.extend(
 
 	selectedItem: null
 
+	selectedItemUrl: 'http://it-ebooks.info/'
+
 	selectedDatasourceType: null
 
 	datasourceTypeSelections: [
@@ -45,6 +47,19 @@ ApplicationController = Ember.Controller.extend(
 
 		cancelAbout: ->
 			Bootstrap.NM.push('About Modal was cancelled', 'info')
+
+	# -------------------------
+	# --- Declare Observers ---
+	# -------------------------
+
+	selectedEbookChanged: ( ->
+
+		if @selectedDatasourceType.title == 'Cloud'
+
+			url = 'http://it-ebooks.info/search/?q=' + @selectedItem.isbn + '&type=isbn'
+			@set('selectedItemUrl', url)
+
+	).observes('selectedItem')
 
 )
 
