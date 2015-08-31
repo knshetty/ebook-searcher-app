@@ -42,6 +42,10 @@ ApplicationController = Ember.Controller.extend(
 			@set('blockToLoad', null)
 			@set('blockToLoad', '<xml xmlns="http://www.w3.org/1999/xhtml"><block type="join_datasource" id="1" x="16" y="5"><mutation items="2"></mutation><field name="DESCRIPTION">Web Know-How</field><value name="ADD0"><block type="join_datasource" id="2"><mutation items="2"></mutation><field name="DESCRIPTION">Markup</field><value name="ADD0"><block type="it-ebooks_datasource" id="3"><field name="SEARCH_STRING">HTML5</field></block></value></block></value><value name="ADD1"><block type="join_datasource" id="4"><mutation items="2"></mutation><field name="DESCRIPTION">Styling</field><value name="ADD0"><block type="it-ebooks_datasource" id="5"><field name="SEARCH_STRING">CSS</field></block></value></block></value></block></xml>')
 
+		load_Example4: ->
+			@set('blockToLoad', null)
+			@set('blockToLoad', '<xml xmlns="http://www.w3.org/1999/xhtml"><block type="join_datasource" id="1" x="16" y="5"><mutation items="2"></mutation><field name="DESCRIPTION">Google-Books + IT-ebooks</field><value name="ADD0"><block type="google-books_datasource" id="2"><field name="SEARCH_STRING">HTML5</field></block></value><value name="ADD1"><block type="it-ebooks_datasource" id="3"><field name="SEARCH_STRING">HTML5</field></block></value></block></xml>')
+
 		showAbout: ->
 			Bootstrap.ModalManager.show('aboutModal')
 
