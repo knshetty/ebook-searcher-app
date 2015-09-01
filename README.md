@@ -4,13 +4,14 @@ Here's an interactive eBook searcher web-app [i.e. a Single-Page Application (SP
 
 * [Ember.js](http://emberjs.com/) a SPA framework
 * [Blockly](https://developers.google.com/blockly/) a visual programming editor library
-* [IT-eBooks API](http://it-ebooks-api.info/) an open RESTful webservice to access eBooks information
+* [IT-eBooks API](http://it-ebooks-api.info/) an open RESTful webservice to access eBooks information available on [IT-eBooks website](http://it-ebooks.info/)
+* [Google Books API](https://developers.google.com/books/docs/overview) an open RESTful webservice to access information on books available on [Google Books website](https://books.google.com/)
 
 ### What can one do with this web-app?
 
-* Search eBooks across multiple RESTful-resources
+* Search for books across multiple RESTful-resources
 * Compose-&-Combine search queries & their results using visual blocks
-* Provides a set of interactive visual blocks, i.e. for example a mouse-click on any given visual block produces an instant UI response.
+* Interact with visual blocks in the editor's toolbox. For example, a mouse-click on any given visual block produces an instant UI response.
 
 ### Ember.js highlights:
 
@@ -24,7 +25,11 @@ Here's an interactive eBook searcher web-app [i.e. a Single-Page Application (SP
 
 ### IT-eBooks API highlights:
 
-* Only a single type of request is made to RESTful API, which is of type '/search/{query}'. Here the response is a paged result-set i.e. each page result is capped to 10 items.
+* Only a single type of request i.e. GET request is made to RESTful API, which is of type '/search/{query}'. Here the response is a paged result-set i.e. each page result is capped to 10 items.
+
+### Google Books API highlights:
+
+* Only a single type of request i.e. GET request is made to RESTful API, which is of type '/volumes/{query}'. Here the response is a paged result-set i.e. each page result is capped to 10 items.
 
 ## Prerequisites
 
