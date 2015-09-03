@@ -13,6 +13,8 @@ Here's an interactive eBook searcher web-app [i.e. a Single-Page Application (SP
 * Compose-&-Combine search queries & their results using visual blocks
 * Interact with visual blocks in the editor's toolbox. For example, a mouse-click on any given visual block produces an instant UI response.
 
+Here's a wiki entry that covers a walk through on [how to play with an available example.](https://github.com/knshetty/ebook-searcher-app/wiki/Step-by-step-guide-on-how-to-play-with-the-available-example)
+
 ### Ember.js highlights:
 
 * Wraps the entire Blockly editor as an ember component
