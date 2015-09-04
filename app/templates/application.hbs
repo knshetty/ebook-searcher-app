@@ -1,7 +1,7 @@
 <div class="titlebackground"></div>
 
 <div class="row">
-	<div class="col-md-11">
+	<div class="col-md-10">
 		<div class="jumbotron" id="titlejumbotron">
 			{{bs-page-header
 				title	= "eBook Searcher"
@@ -9,7 +9,16 @@
 		</div>
 	</div>
 
-	<div class="col-md-1">
+	<div class="col-md-2">
+		<a href='https://github.com/knshetty/ebook-searcher-app/wiki'
+			 target="_blank">
+			{{#bs-button
+				type		= "link"
+				icon		= "glyphicon glyphicon-question-sign"}}
+				Help
+			{{/bs-button}}
+		</a>
+
 		{{#bs-button
 			type		= "link"
 			clicked	= "showAbout"
